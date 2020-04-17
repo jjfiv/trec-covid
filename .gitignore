@@ -11,3 +11,8 @@ logs/
 data
 
 *.log
+*.pyc
+/venv/
+.mypy_cache
+.vscode
+/irene

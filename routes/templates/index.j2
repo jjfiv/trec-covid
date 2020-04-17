@@ -1,0 +1,22 @@
+<html>
+    <head>
+        <title>Index</title>
+    </head>
+    <body>
+        <table>
+            <thead>
+                <tr><th>QID</th><th>Query</th><th>Question</th><th>Narrative</th></tr>
+            </thead>
+        <tbody>
+            {% for q in queries %}
+                <tr>
+                    <td>{{q.qid}}</td>
+                    <td>{{q.query}}</td>
+                    <td>{{q.question}}</td>
+                    <td>{{q.narrative}}</td>
+                </td>
+            {% endfor %}
+        </tbody>
+        </table>
+    </body>
+</html>

@@ -1,0 +1,36 @@
+<html>
+    <head>
+        <title>Search Result for Q={{query.qid}}</title>
+    </head>
+    <body>
+        <div>
+            Q{{query.qid}}: {{query.query}}
+            <div>
+                {{query.narrative}}
+            </div>
+        </div>
+        <div>Found {{results.totalHits}} results in {{timing}}</div>
+
+        <table border=1>
+            <thead>
+                <tr><th>Rank</th><th>Document</th></tr>
+            </thead>
+        <tbody>
+            {% for docr in results.topdocs %}
+                <tr>
+                    <td>{{loop.index}}</td>
+                    <td>
+                    <div>
+                        <code>{{docr.name}}</code>
+                        {% set doc = documents[docr.name] %}
+                        <div class="title">{{doc.title}}</div>
+                        <hr />
+                        <div class="abstract">{{doc.abstract}}</div>
+                    </div>
+                    </td>
+                </td>
+            {% endfor %}
+        </tbody>
+        </table>
+    </body>
+</html>
