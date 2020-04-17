@@ -1,36 +1,39 @@
 <html>
+    {% import 'macros.j2' as macros %}
     <head>
         <title>Search Result for Q={{query.qid}}</title>
+        {{macros.head()}}
     </head>
     <body>
+        {{macros.nav(queries)}}
+        <div class="container">
         <div>
-            Q{{query.qid}}: {{query.query}}
-            <div>
+            <h2>Q{{query.qid}}: {{query.query}}</h2>
+            <p>
                 {{query.narrative}}
-            </div>
+            </p>
         </div>
         <div>Found {{results.totalHits}} results in {{timing}}</div>
 
-        <table border=1>
-            <thead>
+        <table class="table table-hover table-striped table-bordered">
+            <thead class="thead thead-dark">
                 <tr><th>Rank</th><th>Document</th></tr>
             </thead>
         <tbody>
             {% for docr in results.topdocs %}
                 <tr>
-                    <td>{{loop.index}}</td>
+                    <td><a href="{{url_for('document_page', name=docr.name)}}">{{loop.index}}</a></td>
                     <td>
                     <div>
-                        <code>{{docr.name}}</code>
                         {% set doc = documents[docr.name] %}
-                        <div class="title">{{doc.title}}</div>
-                        <hr />
-                        <div class="abstract">{{doc.abstract}}</div>
+                        <h4 class="title">{{doc.title}}</h4>
+                        <p class="abstract">{{doc.abstract}}</p>
                     </div>
                     </td>
                 </td>
             {% endfor %}
         </tbody>
         </table>
+        </div> {# .container #}
     </body>
 </html>

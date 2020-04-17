@@ -96,5 +96,10 @@ def search_results(qid: str):
         documents=documents,
         query=query,
         queries=QUERIES,
-        timing='{:.3} seconds'.format(end - start),
+        timing="{:.3} seconds".format(end - start),
     )
+
+
+@app.route("/doc/<name>")
+def document_page(name: str):
+    return lookup_document(name).body.replace("\n", "<br /><br />")
