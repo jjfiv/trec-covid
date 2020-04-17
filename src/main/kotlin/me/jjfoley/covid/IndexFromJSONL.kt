@@ -53,8 +53,19 @@ fun main() {
                 setTextField("body", body.toString())
             }
         }
+        writer.commit()
         writer.open()
     }.use { reader ->
         println("Indexed: ${reader.totalDocuments} successfully.")
+    }
+}
+
+object TestIndex {
+    @JvmStatic fun main(args: Array<String>) {
+        IndexParams().apply {
+            withPath(COVID_INDEX_PATH)
+        }.openReader().use { index ->
+            println("Indexed: ${index.totalDocuments} successfully.")
+        }
     }
 }
