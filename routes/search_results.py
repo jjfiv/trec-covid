@@ -1,5 +1,6 @@
-from routes import app
+from routes import app, get_user, get_db
 import flask
+from flask import url_for, request
 from irene import *
 from irene.lang import *
 import attr
@@ -7,6 +8,18 @@ import os
 from bs4 import BeautifulSoup
 from functools import lru_cache
 import time
+
+
+def bootstrap_color(name: Optional[str]) -> str:
+    if name is None:
+        return "secondary"
+    elif name == "RELEVANT":
+        return "success"
+    elif name == "UNCLEAR":
+        return "warning"
+    elif name == "NOT-RELEVANT":
+        return "danger"
+    raise ValueError(name)
 
 
 @attr.s
@@ -47,6 +60,9 @@ def get_index() -> IreneIndex:
 
 @app.route("/")
 def home_page():
+    user = get_user()
+    if user is None:
+        return flask.redirect(url_for("login", destination=request.path))
     return flask.render_template("index.j2", queries=QUERIES)
 
 
@@ -77,12 +93,20 @@ def lookup_document(name: str) -> DocData:
 
 @app.route("/search/<qid>")
 def search_results(qid: str):
+    user = get_user()
+    if user is None:
+        return flask.redirect(url_for("login", destination=request.path))
     if qid not in QUERY_DICT:
         return flask.redirect("/")
     query = QUERY_DICT[qid]
     index = get_index()
     start = time.time()
     terms = index.tokenize(query.query)
+    your_relevance = dict()
+    for row in get_db().execute(
+        """select docid, label from relevance order by at_time asc"""
+    ):
+        your_relevance[row["docid"]] = row["label"]
     results = index.query(
         query=MeanExpr([DirQLExpr(TextExpr(t)) for t in terms]), depth=20
     )
@@ -96,10 +120,33 @@ def search_results(qid: str):
         documents=documents,
         query=query,
         queries=QUERIES,
+        relevance=your_relevance,
+        bootstrap_color=bootstrap_color,
         timing="{:.3} seconds".format(end - start),
     )
 
 
 @app.route("/doc/<name>")
 def document_page(name: str):
+    user = get_user()
+    if user is None:
+        return flask.redirect(url_for("login", destination=request.path))
     return lookup_document(name).body.replace("\n", "<br /><br />")
+
+
+@app.route("/relevance/<qid>/<docid>", methods=["POST"])
+def document_relevance(qid: str, docid: str):
+    user = get_user()
+    if user is None:
+        return flask.redirect(url_for("login", destination=request.path))
+    label = flask.request.form["label"]
+    db = get_db()
+    db.execute(
+        """
+    insert into relevance
+    (qid, user, docid, label, at_time)
+    values (?,?,?,?,current_timestamp)
+    """,
+        (qid, user, docid, label),
+    )
+    return flask.redirect(flask.request.form["destination"])

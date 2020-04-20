@@ -21,3 +21,28 @@ You are logged in as user: {{session["user"]}}. <a class="btn btn-danger btn-sm"
 </span>#}
 </nav>
 {% endmacro %}
+
+{% macro relevance_buttons(qid, docid, label) %}
+<a name="{{docid}}>"></a>
+{% if label != 'RELEVANT' %}
+<form action="{{url_for('document_relevance', qid=qid, docid=docid)}}" method="POST" style="display:inline">
+    <input type="hidden" name="destination" value="{{request.path}}#{{docid}}" />
+    <input type="hidden" name="label" value="RELEVANT" />
+    <input class="btn btn-sm btn-success" type="submit" value="Relevant" />
+</form>
+{% endif %}
+{% if label != 'UNCLEAR' %}
+<form action="{{url_for('document_relevance', qid=qid, docid=docid)}}" method="POST" style="display:inline">
+    <input type="hidden" name="destination" value="{{request.path}}#{{docid}}" />
+    <input type="hidden" name="label" value="UNCLEAR" />
+    <input class="btn btn-sm btn-warning" type="submit" value="Unclear" />
+</form>
+{% endif %}
+{% if label != 'NOT-RELEVANT' %}
+<form action="{{url_for('document_relevance', qid=qid, docid=docid)}}" method="POST" style="display:inline">
+    <input type="hidden" name="destination" value="{{request.path}}#{{docid}}" />
+    <input type="hidden" name="label" value="NOT-RELEVANT" />
+    <input class="btn btn-sm btn-danger" type="submit" value="Not-Relevant" />
+</form>
+{% endif %}
+{% endmacro %}

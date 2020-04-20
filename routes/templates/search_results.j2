@@ -26,9 +26,14 @@
                     <td>
                     <div>
                         {% set doc = documents[docr.name] %}
-                        <h4 class="title">{{doc.title}}</h4>
+                        <h4 class="title">{{doc.title}}
+                        {% if docr.name in relevance %}
+                        <span style="float:right" class="badge badge-{{bootstrap_color(relevance[docr.name])}}">{{relevance[docr.name]}}</span>
+                        {% endif %}
+                        </h4>
                         <p class="abstract">{{doc.abstract}}</p>
                     </div>
+                    {{macros.relevance_buttons(query.qid, docr.name, relevance.get(docr.name, None))}}
                     </td>
                 </td>
             {% endfor %}

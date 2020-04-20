@@ -1,0 +1,18 @@
+<html>
+    {% import 'macros.j2' as macros %}
+    <head>
+        <title>Login</title>
+        {{macros.head()}}
+    </head>
+    <body>
+        {{macros.nav()}}
+        <div class="container">
+            <form method="POST" action="{{url_for('login')}}">
+                <label>User: 
+                    <input type="text" name="user" />
+                </label>
+                <input class="btn btn-primary" type="submit" value="Login" />
+            </form>
+        </div> {# container #}
+    </body>
+</html>

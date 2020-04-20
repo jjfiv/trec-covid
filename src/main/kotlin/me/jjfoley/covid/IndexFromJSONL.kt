@@ -13,6 +13,7 @@ data class Cord19Document(
         val authors: String,
         val doi: String,
         val journal: String,
+        val pub_time: String,
         val fields: Map<String, String>
 )
 val COVID_INDEX_PATH = File(DATA_PATH, "covid.irene")

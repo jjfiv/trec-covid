@@ -135,6 +135,7 @@ fun main(args: Array<String>) {
             outP.put("authors", meta.authors)
             outP.put("doi", meta.doi)
             outP.put("journal", meta.journal)
+            outP.put("pub_time", meta.publish_time)
             // list of string:
             val fields = hashMapOf<String, MutableList<String>>()
             for (entry in texts) {
